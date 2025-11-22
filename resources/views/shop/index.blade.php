@@ -163,8 +163,8 @@
                             class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 focus:outline-none"
                         >
                             <option value="">{{ __('Semua potongan') }}</option>
-                            @foreach($cutTypes as $value)
-                                <option value="{{ $value }}" @selected($cutType === $value)>{{ $value }}</option>
+                            @foreach($cutTypes as $cut)
+                                <option value="{{ $cut->slug }}" @selected($cutType === $cut->slug)>{{ $cut->name }}</option>
                             @endforeach
                         </select>
                     </div>
