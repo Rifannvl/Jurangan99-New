@@ -15,6 +15,10 @@ Route::post('/cart/add', [ShopController::class, 'addToCart'])->name('shop.cart.
 Route::patch('/cart/{product}', [ShopController::class, 'updateCart'])->name('shop.cart.update');
 Route::delete('/cart/{product}', [ShopController::class, 'removeFromCart'])->name('shop.cart.remove');
 
+Route::post('/wishlist/add', [ShopController::class, 'addToWishlist'])->name('shop.wishlist.add');
+Route::delete('/wishlist/{product}', [ShopController::class, 'removeFromWishlist'])->name('shop.wishlist.remove');
+Route::get('/wishlist', [ShopController::class, 'showWishlist'])->name('shop.wishlist.index');
+
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
