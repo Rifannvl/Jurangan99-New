@@ -165,14 +165,14 @@
                                         <span class="text-xs">{{ $products->total() }}</span>
                                     </a>
                                 </li>
-                                @foreach($cutTypes as $value)
+                                @foreach($cutTypes as $cut)
                                     <li>
                                         <a
-                                            href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $value])) }}"
-                                            class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ $cutType === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                            href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $cut->slug])) }}"
+                                            class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ $cutType === $cut->slug ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
                                         >
-                                            {{ $value }}
-                                            @if($cutType === $value)
+                                            {{ $cut->name }}
+                                            @if($cutType === $cut->slug)
                                                 <i class="fas fa-check text-xs"></i>
                                             @endif
                                         </a>
@@ -238,14 +238,14 @@
                                     <span class="text-xs">{{ $products->total() }}</span>
                                 </a>
                             </li>
-                            @foreach($cutTypes as $value)
+                            @foreach($cutTypes as $cut)
                                 <li>
                                     <a
-                                        href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $value])) }}"
-                                        class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ $cutType === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                        href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $cut->slug])) }}"
+                                        class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ $cutType === $cut->slug ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
                                     >
-                                        {{ $value }}
-                                        @if($cutType === $value)
+                                        {{ $cut->name }}
+                                        @if($cutType === $cut->slug)
                                             <i class="fas fa-check text-xs"></i>
                                         @endif
                                     </a>
