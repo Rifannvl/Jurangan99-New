@@ -21,6 +21,7 @@
                 <flux:navlist variant="outline">
                     <flux:navlist.group :heading="__('Administration')" class="grid">
                         <flux:navlist.item icon="shield-check" :href="route('admin.dashboard')" :current="request()->routeIs('admin.dashboard')" wire:navigate>{{ __('Admin Dashboard') }}</flux:navlist.item>
+                        <flux:navlist.item icon="cube" :href="route('admin.products.index')" :current="request()->routeIs('admin.products.*')" wire:navigate>{{ __('Products') }}</flux:navlist.item>
                     </flux:navlist.group>
                 </flux:navlist>
             @endif
