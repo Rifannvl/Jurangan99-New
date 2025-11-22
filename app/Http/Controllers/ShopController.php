@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cut;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,12 +50,7 @@ class ShopController extends Controller
             ->orderBy('category')
             ->pluck('category');
 
-        $cutTypes = Product::query()
-            ->whereNotNull('cut_type')
-            ->where('cut_type', '<>', '')
-            ->distinct()
-            ->orderBy('cut_type')
-            ->pluck('cut_type');
+        $cutTypes = Cut::orderBy('name')->get();
 
         $cartItems = $this->loadCartItems($request);
         $cartQuantity = $cartItems->sum('quantity');
@@ -110,12 +106,7 @@ class ShopController extends Controller
             ->orderBy('category')
             ->pluck('category');
 
-        $cutTypes = Product::query()
-            ->whereNotNull('cut_type')
-            ->where('cut_type', '<>', '')
-            ->distinct()
-            ->orderBy('cut_type')
-            ->pluck('cut_type');
+        $cutTypes = Cut::orderBy('name')->get();
 
         $cartItems = $this->loadCartItems($request);
         $cartQuantity = $cartItems->sum('quantity');
