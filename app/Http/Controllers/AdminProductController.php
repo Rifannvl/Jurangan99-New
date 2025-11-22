@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cut;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -21,7 +22,9 @@ class AdminProductController extends Controller
 
     public function create(): View
     {
-        return view('admin.products.create');
+        $cutTypes = Cut::orderBy('name')->get();
+
+        return view('admin.products.create', compact('cutTypes'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -39,7 +42,9 @@ class AdminProductController extends Controller
 
     public function edit(Product $product): View
     {
-        return view('admin.products.edit', compact('product'));
+        $cutTypes = Cut::orderBy('name')->get();
+
+        return view('admin.products.edit', compact('product', 'cutTypes'));
     }
 
     public function update(Request $request, Product $product): RedirectResponse
