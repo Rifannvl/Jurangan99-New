@@ -1,105 +1,353 @@
 @php
+    use Illuminate\Support\Arr;
     use Illuminate\Support\Str;
+    $filters = request()->except('page');
 @endphp
 
 <x-layouts.plain :title="__('Product Catalog')">
-    <div class="min-h-screen bg-gradient-to-b from-[#f6f7f2] via-[#fbfdf9] to-[#f3f7ed] text-zinc-900">
-        <nav class="sticky top-0 z-30 border-b border-zinc-200/60 bg-white/80 backdrop-blur">
-            <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-0">
-                <div class="flex items-center gap-3">
-                    <span class="text-emerald-600 text-sm font-semibold uppercase tracking-[0.4em]">rifan market</span>
-                    <p class="text-sm text-zinc-700">{{ __('Semua produk') }}</p>
-                </div>
-                <div class="hidden items-center gap-6 text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500 sm:flex">
-                    <a href="{{ route('home') }}" class="transition hover:text-emerald-600">{{ __('Home') }}</a>
-                    <a href="{{ route('shop.products.index') }}" class="text-emerald-500">{{ __('Product') }}</a>
-                    <a href="{{ route('shop.cart.index') }}" class="transition hover:text-emerald-600">{{ __('Keranjang') }}</a>
-                    <a href="{{ route('shop.wishlist.index') }}" class="transition hover:text-emerald-600">{{ __('Wishlist') }}</a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('home') }}#products" class="rounded-full border border-emerald-500/60 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500 transition hover:border-emerald-400">{{ __('Lihat katalog') }}</a>
-                </div>
+    {{-- Alpine.js diperlukan untuk menangani state sidebar/drawer --}}
+    <div x-data="{ sidebarOpen: false }" class="min-h-screen bg-gradient-to-b from-[#f6f7f2] via-[#fbfdf9] to-[#f3f7ed] text-zinc-900">
+        {{-- Navbar Tetap (Sama seperti sebelumnya) --}}
+       {{-- Asumsi Anda memiliki variabel $cartQuantity dan $wishlistCount di view atau layout --}}
+
+<nav class="sticky top-0 z-30 border-b border-zinc-200/60 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
+        
+        {{-- 1. Logo/Branding di Kiri --}}
+        <div class="flex items-center gap-6">
+            <a href="{{ route('home') }}" class="text-xl font-extrabold text-zinc-900 tracking-tight">
+                {{-- Mengganti text uppercase kecil menjadi logo yang lebih jelas --}}
+                <span class="text-emerald-600">Jurangan</span> 99
+            </a>
+            
+            {{-- Navigasi Utama (Dibuat lebih ringkas, muncul di desktop) --}}
+            <div class="hidden items-center gap-6 text-sm font-semibold text-zinc-600 md:flex">
+                <a href="{{ route('shop.products.index') }}" class="transition hover:text-emerald-600 {{ Request::routeIs('shop.products.index') ? 'text-emerald-600' : '' }}">{{ __('Product') }}</a>
+                <a href="{{ route('home') }}" class="transition hover:text-emerald-600">{{ __('Home') }}</a>
+                {{-- Anda bisa tambahkan link lain di sini --}}
             </div>
-        </nav>
+        </div>
+
+        {{-- 2. Aksi dan Ikon di Kanan (Lebih Fokus) --}}
+        <div class="flex items-center gap-4">
+            
+            {{-- Ikon Wishlist (Hanya tampil ikon, lebih clean) --}}
+            <a href="{{ route('shop.wishlist.index') }}" class="relative text-zinc-500 transition hover:text-rose-500">
+                {{-- Ikon Hati --}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                </svg>
+                @if(($wishlistCount ?? 0) > 0)
+                <span class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-bold text-white leading-none">
+                    {{ $wishlistCount }}
+                </span>
+                @endif
+            </a>
+            
+            {{-- Ikon Keranjang (Hanya tampil ikon, lebih clean) --}}
+            <a href="{{ route('shop.cart.index') }}" class="relative text-zinc-500 transition hover:text-emerald-600">
+                {{-- Ikon Keranjang --}}
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-bag" viewBox="0 0 16 16">
+                    <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+                </svg>
+                @if(($cartQuantity ?? 0) > 0)
+                <span class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white leading-none">
+                    {{ $cartQuantity }}
+                </span>
+                @endif
+            </a>
+
+            {{-- Tombol Aksi Utama --}}
+            <a href="{{ route('home') }}#products" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-emerald-500 hidden sm:block">
+                {{ __('Lihat katalog') }}
+            </a>
+
+           
+        </div>
+    </div>
+</nav>
 
         <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-0">
-            <header class="rounded-3xl border border-emerald-100 bg-white/80 p-6 shadow-lg shadow-emerald-100/50">
-                <div class="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                        <p class="text-xs uppercase tracking-[0.4em] text-emerald-600">{{ __('Product') }}</p>
-                        <h1 class="text-3xl font-semibold text-zinc-900">{{ __('Semua produk tersedia') }}</h1>
-                        <p class="text-sm text-zinc-600">{{ __('Telusuri katalog lengkap kami dengan detail harga, stok, dan simpanan favorit.') }}</p>
+            {{-- Header/Jumbotron (Sama seperti sebelumnya) --}}
+            <header class="relative overflow-hidden rounded-3xl border border-emerald-100 bg-gradient-to-r from-zinc-600 to-zinc-300 p-6 shadow-lg shadow-emerald-100/50">
+                <img
+                    src="https://images.unsplash.com/photo-1690983322025-aab4f95a0269?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8ZGFnaW5nJTIwc2FwaXxlbnwwfHwwfHx8MA%3D%3D&fm=jpg&q=60&w=3000"
+                    alt="Groceries spread"
+                    class="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-30"
+                >
+                <div class="relative space-y-2 text-white">
+                    <p class="text-xs uppercase tracking-[0.4em] text-white">{{ __('Product') }}</p>
+                    <h1 class="text-3xl font-semibold text-white">{{ __('Semua produk tersedia') }}</h1>
+                    <p class="text-sm text-white">{{ __('Telusuri katalog lengkap kami dengan detail harga, stok, dan simpanan favorit.') }}</p>
+                    <div class="flex flex-wrap items-center gap-4 text-xs uppercase tracking-[0.3em] text-emerald-50">
+                        <span class="rounded-full border border-white/30 px-3 py-1">{{ __('Premium cuts') }}</span>
+                        <span class="rounded-full border border-white/30 px-3 py-1">{{ __('Fresh delivery') }}</span>
+                        <span class="rounded-full border border-white/30 px-3 py-1">{{ __('Wishlist') }}</span>
                     </div>
-                    <div class="text-right space-y-1 text-sm text-zinc-500">
-                        <p>{{ __('Items di keranjang') }}: {{ $cartQuantity }}</p>
-                        <p>{{ __('Wishlist') }}: {{ $wishlistCount }}</p>
+                    <div class="flex flex-wrap items-center gap-4 text-sm text-white">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em]">{{ __('Items di keranjang') }}</p>
+                            <p class="text-2xl font-bold">{{ $cartQuantity }}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.4em]">{{ __('Wishlist') }}</p>
+                            <p class="text-2xl font-bold">{{ $wishlistCount }}</p>
+                        </div>
                     </div>
                 </div>
             </header>
 
-            <section class="mt-8 grid gap-6 md:grid-cols-2">
-                @foreach($products as $product)
-                    <article class="flex flex-col gap-4 rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg shadow-zinc-100 transition hover:shadow-emerald-200">
-                        <div class="aspect-[4/3] w-full overflow-hidden rounded-2xl bg-zinc-100 border border-zinc-200">
-                            @if($product->image_url)
-                                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover" />
-                            @else
-                                <div class="flex h-full w-full items-center justify-center text-sm uppercase tracking-[0.4em] text-zinc-400">
-                                    {{ __('No Image') }}
-                                </div>
-                            @endif
-                        </div>
-                        <div class="flex flex-col gap-2">
-                            <div class="flex items-center justify-between">
-                                <span class="text-xs uppercase tracking-[0.4em] text-emerald-600">{{ $product->category ?? __('Uncategorized') }}</span>
-                                <span class="text-xs uppercase tracking-[0.4em] text-zinc-400">{{ $product->cut_type ?? __('Standard') }}</span>
-                            </div>
-                            <h3 class="text-xl font-bold text-zinc-900">{{ $product->name }}</h3>
-                            <p class="text-sm text-zinc-500">{{ Str::limit($product->description ?? __('Deskripsi belum tersedia.'), 90) }}</p>
-                            <div class="flex items-center justify-between text-sm font-semibold text-emerald-600">
-                                <span>Rp {{ number_format($product->price, 0, ',', '.') }}</span>
-                                <span class="text-xs text-zinc-500">{{ __('Stok') }}: {{ number_format($product->stock) }}</span>
-                            </div>
-                        </div>
-                        <div class="flex items-center justify-between gap-3">
-                            <form action="{{ route('shop.cart.add') }}" method="POST" class="flex-1">
-                                @csrf
-                                <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                <input type="hidden" name="quantity" value="1">
-                                <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-white transition hover:bg-emerald-500">
-                                    {{ __('Tambah ke keranjang') }}
-                                </button>
-                            </form>
-                            <form action="{{ in_array($product->id, $wishlistIds ?? []) ? route('shop.wishlist.remove', $product) : route('shop.wishlist.add') }}" method="POST" class="flex">
-                                @csrf
-                                @if(!in_array($product->id, $wishlistIds ?? []))
-                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                @else
-                                    @method('DELETE')
-                                @endif
-                                <button
-                                    type="submit"
-                                    class="h-11 w-11 rounded-2xl border border-zinc-200 bg-white text-zinc-500 transition hover:text-rose-500 hover:border-rose-200"
-                                    aria-label="{{ in_array($product->id, $wishlistIds ?? []) ? __('Hapus wishlist') : __('Simpan wishlist') }}"
-                                >
-                                    @if(in_array($product->id, $wishlistIds ?? []))
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart-fill text-rose-500" viewBox="0 0 16 16">
-                                            <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
-                                        </svg>
-                                    @else
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                            <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                        </svg>
-                                    @endif
-                                </button>
-                            </form>
-                        </div>
-                    </article>
-                @endforeach
-            </section>
+            {{-- Struktur Konten Utama: Drawer Sidebar (Mobile) + Filter Statis (Desktop) + Main Content --}}
+            <div class="mt-10 flex gap-6">
 
-            <div class="mt-10 flex items-center justify-center">
-                {{ $products->links('pagination::tailwind') }}
+                {{-- A. Filter Sidebar/Drawer (Hanya Terlihat di Mobile/Kecil) --}}
+                <div
+                    x-cloak
+                    x-show="sidebarOpen"
+                    @click="sidebarOpen = false"
+                    class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+                ></div>
+                <div
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="-translate-x-full"
+                    x-transition:enter-end="translate-x-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="translate-x-0"
+                    x-transition:leave-end="-translate-x-full"
+                    x-show="sidebarOpen"
+                    class="fixed inset-y-0 left-0 z-50 w-64 space-y-6 overflow-y-auto border-r border-zinc-200 bg-white p-6 shadow-2xl lg:relative lg:translate-x-0 lg:hidden"
+                >
+                    <button type="button" @click="sidebarOpen = false" class="absolute right-4 top-4 text-zinc-500 transition hover:text-zinc-700">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <h2 class="text-lg font-semibold text-zinc-900 pt-2">{{ __('Filter Produk') }}</h2>
+                    <div class="space-y-6">
+                        {{-- Isi Filter: Kategori --}}
+                        <div class="space-y-4">
+                            <h3 class="text-base font-semibold text-zinc-900">{{ __('Kategori') }}</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li>
+                                    <a
+                                        href="{{ route('shop.products.index', Arr::except($filters, ['category'])) }}"
+                                        class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ empty($category) ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                    >
+                                        {{ __('Semua kategori') }}
+                                        <span class="text-xs">{{ $products->total() }}</span>
+                                    </a>
+                                </li>
+                                @foreach($categories as $value)
+                                    <li>
+                                        <a
+                                            href="{{ route('shop.products.index', array_merge($filters, ['category' => $value])) }}"
+                                            class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ $category === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                        >
+                                            {{ $value }}
+                                            @if($category === $value)
+                                                <i class="fas fa-check text-xs"></i>
+                                            @endif
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+
+                        {{-- Isi Filter: Jenis Potongan --}}
+                        <div class="space-y-4">
+                            <h3 class="text-base font-semibold text-zinc-900">{{ __('Jenis potongan') }}</h3>
+                            <ul class="space-y-2 text-sm">
+                                <li>
+                                    <a
+                                        href="{{ route('shop.products.index', Arr::except($filters, ['cut_type'])) }}"
+                                        class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ empty($cutType) ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                    >
+                                        {{ __('Semua potongan') }}
+                                        <span class="text-xs">{{ $products->total() }}</span>
+                                    </a>
+                                </li>
+                                @foreach($cutTypes as $value)
+                                    <li>
+                                        <a
+                                            href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $value])) }}"
+                                            class="flex items-center justify-between rounded-xl px-3 py-2 transition {{ $cutType === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                        >
+                                            {{ $value }}
+                                            @if($cutType === $value)
+                                                <i class="fas fa-check text-xs"></i>
+                                            @endif
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- B. Filter Sidebar Statis (Hanya Terlihat di Desktop/Besar) --}}
+                <aside class="hidden w-[280px] shrink-0 space-y-6 lg:block">
+                    <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-zinc-500">{{ __('Filter') }}</p>
+                                <h2 class="text-lg font-semibold text-zinc-900">{{ __('Kategori') }}</h2>
+                            </div>
+                            <a href="{{ route('shop.products.index', Arr::except($filters, ['category'])) }}" class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">{{ __('Reset') }}</a>
+                        </div>
+                        <ul class="mt-4 space-y-2 text-sm">
+                            {{-- Isi Filter: Kategori (Sama seperti di Drawer) --}}
+                            <li>
+                                <a
+                                    href="{{ route('shop.products.index', Arr::except($filters, ['category'])) }}"
+                                    class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ empty($category) ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                >
+                                    {{ __('Semua kategori') }}
+                                    <span class="text-xs">{{ $products->total() }}</span>
+                                </a>
+                            </li>
+                            @foreach($categories as $value)
+                                <li>
+                                    <a
+                                        href="{{ route('shop.products.index', array_merge($filters, ['category' => $value])) }}"
+                                        class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ $category === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                    >
+                                        {{ $value }}
+                                        @if($category === $value)
+                                            <i class="fas fa-check text-xs"></i>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    <div class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.4em] text-zinc-500">{{ __('Filter') }}</p>
+                                <h2 class="text-lg font-semibold text-zinc-900">{{ __('Jenis potongan') }}</h2>
+                            </div>
+                            <a href="{{ route('shop.products.index', Arr::except($filters, ['cut_type'])) }}" class="text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500">{{ __('Reset') }}</a>
+                        </div>
+                        <ul class="mt-4 space-y-2 text-sm">
+                            {{-- Isi Filter: Jenis Potongan (Sama seperti di Drawer) --}}
+                            <li>
+                                <a
+                                    href="{{ route('shop.products.index', Arr::except($filters, ['cut_type'])) }}"
+                                    class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ empty($cutType) ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                >
+                                    {{ __('Semua potongan') }}
+                                    <span class="text-xs">{{ $products->total() }}</span>
+                                </a>
+                            </li>
+                            @foreach($cutTypes as $value)
+                                <li>
+                                    <a
+                                        href="{{ route('shop.products.index', array_merge($filters, ['cut_type' => $value])) }}"
+                                        class="flex items-center justify-between rounded-2xl px-3 py-2 transition {{ $cutType === $value ? 'bg-emerald-600 text-white' : 'bg-zinc-50 text-zinc-600' }}"
+                                    >
+                                        {{ $value }}
+                                        @if($cutType === $value)
+                                            <i class="fas fa-check text-xs"></i>
+                                        @endif
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </aside>
+
+                {{-- C. Konten Utama (Daftar Produk) --}}
+                <main class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-2xl font-semibold text-zinc-900">{{ __('Shop all products') }}</h2>
+                        {{-- Tombol Filter untuk Mobile/Tablet --}}
+                        <button type="button" @click="sidebarOpen = true" class="flex items-center gap-2 rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100 lg:hidden">
+                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414A1 1 0 0011 17v2a1 1 0 01-2 0v-2a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" /></svg>
+                            {{ __('Filter') }}
+                        </button>
+                        {{-- Tampilan Item di Desktop --}}
+                        <p class="hidden text-xs uppercase tracking-[0.3em] text-zinc-500 lg:block">{{ __('Showing') }} {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }}</p>
+                    </div>
+
+                    <form method="GET" action="{{ route('shop.products.index') }}" class="mt-4 flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white/70 p-3 text-sm shadow-sm md:flex-row md:items-center md:gap-4">
+                        <input type="hidden" name="category" value="{{ $category ?? '' }}">
+                        <input type="hidden" name="cut_type" value="{{ $cutType ?? '' }}">
+                        <input
+                            name="search"
+                            type="search"
+                            placeholder="{{ __('Cari produk...') }}"
+                            value="{{ $search ?? '' }}"
+                            class="flex-1 rounded-2xl border border-transparent bg-zinc-50 px-4 py-2 text-sm text-zinc-800 focus:border-emerald-500 focus:outline-none focus:ring-0"
+                        >
+                        <button type="submit" class="rounded-2xl bg-emerald-600 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-white transition hover:bg-emerald-500">
+                            {{ __('Search') }}
+                        </button>
+                    </form>
+
+                    @if($products->isEmpty())
+                        <div class="mt-8 rounded-3xl border border-zinc-200 bg-white p-6 text-center text-sm text-zinc-600 shadow-lg">
+                            {{ __('Tidak ada produk yang sesuai filter saat ini. Coba kategori lain.') }}
+                        </div>
+                    @else
+                        {{-- Daftar Produk (Sama seperti sebelumnya) --}}
+                        <div class="mt-8 grid gap-6 md:grid-cols-2">
+                            @foreach($products as $product)
+                                <article class="group flex flex-col rounded-[1.5rem] border border-zinc-200 bg-white p-6 shadow-lg transition hover:border-emerald-300 hover:shadow-emerald-100">
+                                    <div class="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-zinc-100">
+                                        @if($product->image_url)
+                                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                                        @else
+                                            <div class="flex h-full w-full items-center justify-center text-xs uppercase tracking-[0.4em] text-zinc-400">
+                                                {{ __('No Image') }}
+                                            </div>
+                                        @endif
+                                        <form action="{{ in_array($product->id, $wishlistIds ?? []) ? route('shop.wishlist.remove', $product) : route('shop.wishlist.add') }}" method="POST" class="absolute right-4 top-4">
+                                            @csrf
+                                            @if(in_array($product->id, $wishlistIds ?? []))
+                                                @method('DELETE')
+                                            @endif
+                                            <button type="submit" class="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/70 bg-white/70 text-zinc-500 transition hover:border-emerald-300 hover:text-rose-500">
+                                                @if(in_array($product->id, $wishlistIds ?? []))
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart-fill text-rose-500" viewBox="0 0 16 16">
+                                                        <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                                                    </svg>
+                                                @else
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                        <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                    </svg>
+                                                @endif
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div class="flex flex-1 flex-col gap-3">
+                                        <div class="flex items-center justify-between text-xs uppercase tracking-[0.4em] text-zinc-500">
+                                            <span>{{ $product->category ?? __('Uncategorized') }}</span>
+                                            <span>{{ $product->cut_type ?? __('Standard') }}</span>
+                                        </div>
+                                        <h3 class="text-xl font-semibold text-zinc-900">{{ $product->name }}</h3>
+                                        <p class="text-sm text-zinc-500">{{ Str::limit($product->description ?? __('Deskripsi belum tersedia.'), 100) }}</p>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-2xl font-bold text-emerald-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            <span class="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-400">{{ __('Stok') }} {{ number_format($product->stock) }}</span>
+                                        </div>
+                                    </div>
+                                    <form action="{{ route('shop.cart.add') }}" method="POST" class="mt-6 flex">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-white transition hover:bg-emerald-500">
+                                            {{ __('Tambah ke keranjang') }}
+                                        </button>
+                                    </form>
+                                </article>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    {{-- Pagination (Sama seperti sebelumnya) --}}
+                    <div class="mt-10 flex items-center justify-center">
+                        {{ $products->links('pagination::tailwind') }}
+                    </div>
+                </main>
             </div>
         </div>
     </div>
