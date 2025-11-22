@@ -4,20 +4,25 @@
 
 <x-layouts.plain :title="__('Keranjang')">
     <div class="min-h-screen bg-gradient-to-b from-[#f6f7f2] via-[#fbfdf9] to-[#f3f7ed] text-zinc-900">
-        <nav class="sticky top-0 z-30 border-b border-zinc-200/60 bg-white/80 backdrop-blur">
-            <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-0">
-                <div class="flex items-center gap-3">
-                    <span class="text-emerald-600 text-sm font-semibold uppercase tracking-[0.4em]">Juranan99</span>
-               </div>
-                <div class="hidden items-center gap-6 text-xs font-semibold uppercase tracking-[0.3em] text-zinc-500 sm:flex">
-                    <a href="{{ route('home') }}" class="transition hover:text-emerald-600">{{ __('Home') }}</a>
-                    <a href="#products" class="transition hover:text-emerald-600">{{ __('Produk') }}</a>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="{{ route('home') }}#products" class="rounded-full border border-emerald-500/60 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-emerald-500 transition hover:border-emerald-400">{{ __('Lihat katalog') }}</a>
-                </div>
-            </div>
-        </nav>
+        <nav class="sticky top-0 z-30 bg-white shadow-md border-b border-gray-100">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-0">
+        
+        {{-- Logo/Nama Toko (Kiri) --}}
+        <div class="flex items-center gap-4">
+            {{-- Menggunakan style logo yang sama dengan Home/Wishlist --}}
+            <span class="text-emerald-600 text-xl font-bold tracking-wide">Juranan99</span>
+        </div>
+
+        {{-- Blok Tautan Navigasi (Dihilangkan, hanya menyisakan tombol Lihat Katalog) --}}
+        
+        {{-- Tombol Lihat Katalog/Aksi (Kanan) --}}
+        <div class="flex items-center gap-3">
+            <a href="{{ route('home') }}#products" class="rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-700">
+                <i class="fas fa-shopping-basket mr-2"></i> {{ __('Lihat katalog') }}
+            </a>
+        </div>
+    </div>
+</nav>
  
         <div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-0">
            
