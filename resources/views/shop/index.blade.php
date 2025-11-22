@@ -258,31 +258,37 @@
         {{ __('Tambah ke keranjang') }}
     </button>
 </form>
-                                            @if(in_array($product->id, $wishlistIds ?? []))
-                                                <form action="{{ route('shop.wishlist.remove', $product) }}" method="POST" class="mt-2 flex w-full">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button
-                                                        type="submit"
-                                                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-red-600 transition hover:border-red-300"
-                                                    >
-                                                        <i class="fas fa-heart-broken text-sm"></i>
-                                                        {{ __('Hapus wishlist') }}
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('shop.wishlist.add') }}" method="POST" class="mt-2 flex w-full">
-                                                    @csrf
-                                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                    <button
-                                                        type="submit"
-                                                        class="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-600 transition hover:border-emerald-300"
-                                                    >
-                                                        <i class="fas fa-heart text-sm"></i>
-                                                        {{ __('Simpan wishlist') }}
-                                                    </button>
-                                                </form>
-                                            @endif
+                                            <div class="mt-2 flex w-full">
+                                                @if(in_array($product->id, $wishlistIds ?? []))
+                                                    <form action="{{ route('shop.wishlist.remove', $product) }}" method="POST" class="flex w-full">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button
+                                                            type="submit"
+                                                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-rose-600 transition hover:border-rose-300"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill text-rose-500" viewBox="0 0 16 16">
+                                                                <path fill-rule="evenodd" d="M8 1.314C5.562-.044 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                            </svg>
+                                                            {{ __('Hapus wishlist') }}
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <form action="{{ route('shop.wishlist.add') }}" method="POST" class="flex w-full">
+                                                        @csrf
+                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                                        <button
+                                                            type="submit"
+                                                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-600 transition hover:border-emerald-300"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                                                            </svg>
+                                                            {{ __('Simpan wishlist') }}
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                             </div>
                                         </article>
                                     @endforeach
