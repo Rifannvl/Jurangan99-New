@@ -9,54 +9,64 @@
 
         {{-- Navigasi Atas (Header) --}}
         {{-- Mengganti dark nav dengan light nav --}}
-        <nav class="sticky top-0 z-30 bg-white shadow-md border-b border-gray-100">
-            <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-0">
-                <div class="flex items-center gap-4">
-                    {{-- Logo/Nama Toko --}}
-                    {{-- Warna logo/brand diubah ke warna hijau/emerald/primary yang lebih terang --}}
-                    <span class="text-emerald-600 text-xl font-bold tracking-wide">Juranan99</span>
-                </div>
-                {{-- Tautan Navigasi --}}
-                <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-700">
-                    <a href="{{ route('home') }}" class="transition hover:text-emerald-600">{{ __('Home') }}</a>
-                    <a href="#products" class="transition hover:text-emerald-600">{{ __('Produk') }}</a>
-                    <a
-                        href="{{ route('shop.cart.index') }}"
-                        class="relative transition hover:text-emerald-600"
-                        aria-label="{{ __('Lihat keranjang') }}"
-                    >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check-fill" viewBox="0 0 16 16">
-  <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-1.646-7.646-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708"/>
-</svg>
-                        @if($cartQuantity > 0)
-                            <span class="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
-                                {{ $cartQuantity }}
-                            </span>
-                        @else
-                            <span class="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-zinc-300 px-1 text-[10px] font-semibold text-zinc-700">
-                                0
-                            </span>
-                        @endif
-                    </a>
-                    <a
-                        href="{{ route('shop.wishlist.index') }}"
-                        class="relative transition hover:text-emerald-600"
-                        aria-label="{{ __('Lihat wishlist') }}"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M8 1.314C5.562-.044 2.688.201 1.4 1.63c-1.062 1.162-.539 3.057 1.03 4.456L8 15l5.57-8.914c1.57-1.4 2.092-3.294 1.031-4.456C13.311.2 10.437-.043 8 1.314z"/>
-                        </svg>
-                        <span class="absolute -top-2 -right-2 flex h-4 min-w-[16px] items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-semibold text-white">
-                            {{ $wishlistCount }}
-                        </span>
-                    </a>
-                </div>
-                {{-- Tombol Lihat Katalog/Aksi --}}
-                <a href="{{ route('home') }}#products" class="rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-700">
-                    <i class="fas fa-shopping-basket mr-2"></i> {{ __('Lihat katalog') }}
-                </a>
-            </div>
-        </nav>
+       <nav class="sticky top-0 z-30 bg-white shadow-md border-b border-gray-100">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-0">
+        
+        {{-- Logo/Nama Toko (Kiri) --}}
+        <div class="flex items-center gap-4">
+            <span class="text-emerald-600 text-xl font-bold tracking-wide">Juranan99</span>
+        </div>
+
+        {{-- Aksi Kanan (Keranjang, Wishlist, dan Lihat Katalog) --}}
+        {{-- Semua tautan aksi digabungkan di sini --}}
+        <div class="flex items-center gap-4"> 
+            
+            {{-- 1. Tautan Keranjang (Ikon) --}}
+            <a
+                href="{{ route('shop.cart.index') }}"
+                class="relative text-gray-700 transition hover:text-emerald-600"
+                aria-label="{{ __('Lihat keranjang') }}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart-check-fill" viewBox="0 0 16 16">
+                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-1.646-7.646-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708"/>
+                </svg>
+                
+                {{-- Badge Kuantitas Keranjang --}}
+                @if(isset($cartQuantity) && $cartQuantity > 0)
+                    <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
+                        {{ $cartQuantity > 99 ? '99+' : $cartQuantity }}
+                    </span>
+                @endif
+            </a>
+
+            {{-- 2. Tautan Wishlist (Ikon) --}}
+            <a
+                href="{{ route('shop.wishlist.index') }}"
+                class="relative text-gray-700 transition hover:text-emerald-600"
+                aria-label="{{ __('Lihat wishlist') }}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                </svg>
+                
+                {{-- Badge Kuantitas Wishlist --}}
+                @if(isset($wishlistCount) && $wishlistCount > 0)
+                    <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[10px] font-semibold text-white">
+                        {{ $wishlistCount > 99 ? '99+' : $wishlistCount }}
+                    </span>
+                @endif
+            </a>
+            
+            {{-- Tambahkan pemisah visual kecil --}}
+            <span class="h-6 w-px bg-gray-200 hidden sm:block"></span>
+
+            {{-- 3. Tombol Lihat Katalog/Aksi --}}
+            <a href="{{ route('home') }}#products" class="rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-700">
+                <i class="fas fa-shopping-basket mr-2"></i> {{ __('Lihat katalog') }}
+            </a>
+        </div>
+    </div>
+</nav>
 
         <div class="mx-auto flex max-w-6xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-0">
             
@@ -211,7 +221,11 @@
     <input type="hidden" name="product_id" value="{{ $product->id }}">
     
     {{-- 1. Quantity Stepper Component --}}
-    <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm h-10 w-32">
+    <div class="mt-4 flex w-full items-center justify-between gap-3">
+    
+    {{-- 1. Quantity Stepper Component --}}
+    <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm h-10 w-32 flex-shrink-0">
+        {{-- Kontainer Stepper tetap w-32 dan flex-shrink-0 --}}
         
         {{-- Tombol MINUS --}}
         <button
@@ -247,49 +261,54 @@
         </button>
     </div>
 
-    {{-- 2. Tombol Submit (Tambah ke Keranjang) --}}
-    <button
-        type="submit"
-        class="flex-1 h-10 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-700 flex items-center justify-center gap-2"
-    >
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check-fill" viewBox="0 0 16 16">
-            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-1.646-7.646-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708"/>
-        </svg>
-        {{ __('Tambah ke keranjang') }}
-    </button>
-</form>
-                                            <div class="mt-2 flex w-full">
-                                                @if(in_array($product->id, $wishlistIds ?? []))
-                                                    <form action="{{ route('shop.wishlist.remove', $product) }}" method="POST" class="flex w-full">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button
-                                                            type="submit"
-                                                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-rose-600 transition hover:border-rose-300"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill text-rose-500" viewBox="0 0 16 16">
-                                                                <path fill-rule="evenodd" d="M8 1.314C5.562-.044 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                            </svg>
-                                                            {{ __('Hapus wishlist') }}
-                                                        </button>
-                                                    </form>
-                                                @else
-                                                    <form action="{{ route('shop.wishlist.add') }}" method="POST" class="flex w-full">
-                                                        @csrf
-                                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
-                                                        <button
-                                                            type="submit"
-                                                            class="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.4em] text-emerald-600 transition hover:border-emerald-300"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
-                                                                <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
-                                                            </svg>
-                                                            {{ __('Simpan wishlist') }}
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                            </div>
+    
+    <form action="{{ route('shop.cart.add') }}" method="POST" class="flex-1">
+        @csrf
+        <input type="hidden" name="product_id" value="{{ $product->id }}">
+        {{-- 2. Tombol Submit (Tambah ke Keranjang) --}}
+        {{-- Gunakan flex-1 pada form wrapper, dan w-full pada button untuk mengisi ruang sisa --}}
+        <button
+            type="submit"
+            class="w-full h-10 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-md shadow-emerald-500/30 transition hover:bg-emerald-700 flex items-center justify-center gap-2"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check-fill" viewBox="0 0 16 16">
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0m7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m-1.646-7.646-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L8 8.293l2.646-2.647a.5.5 0 0 1 .708.708"/>
+            </svg>
+            {{ __('Keranjang') }}
+        </button>
+    </form>
+
+    {{-- 3. Tombol Wishlist --}}
+    @if(in_array($product->id, $wishlistIds ?? []))
+        <form action="{{ route('shop.wishlist.remove', $product) }}" method="POST" class="flex-shrink-0">
+            @csrf
+            @method('DELETE')
+            <button
+                type="submit"
+                {{-- Hanya icon, h-10 dan w-10 untuk membuatnya kotak --}}
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-rose-400 bg-rose-100 text-rose-600 transition hover:bg-rose-200"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart-fill" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314"/>
+                </svg>
+            </button>
+        </form>
+    @else
+        <form action="{{ route('shop.wishlist.add') }}" method="POST" class="flex-shrink-0">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <button
+                type="submit"
+                {{-- Hanya icon, h-10 dan w-10 untuk membuatnya kotak --}}
+                class="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-300 bg-white text-gray-500 transition hover:border-emerald-500 hover:text-emerald-600"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-heart" viewBox="0 0 16 16">
+                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143q.09.083.176.171a3 3 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15"/>
+                </svg>
+            </button>
+        </form>
+    @endif
+</div>           </div>
                                         </article>
                                     @endforeach
                                 </div>
