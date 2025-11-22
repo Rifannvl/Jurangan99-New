@@ -89,7 +89,7 @@
             
             {{-- Tombol atau informasi tambahan --}}
             <div class="mt-6 flex items-center gap-4">
-                <a href="#products" class="rounded-full bg-emerald-600 px-7 py-3 text-base font-semibold text-white shadow-lg shadow-emerald-500/40 transition hover:bg-emerald-700">
+                <a href="product" class="rounded-full bg-emerald-600 px-7 py-3 text-base font-semibold text-white shadow-lg shadow-emerald-500/40 transition hover:bg-emerald-700">
                     {{ __('Lihat Produk Sekarang') }}
                 </a>
                 <a href="mailto:juranan99@example.com" class="text-white hover:text-emerald-300 transition flex items-center gap-2">
