@@ -14,6 +14,8 @@ class ShopController extends Controller
         $search = $request->input('search');
         $category = $request->input('category');
         $cutType = $request->input('cut_type');
+        $minPrice = $request->input('min_price');
+        $maxPrice = $request->input('max_price');
 
         $products = Product::query()
             ->when($search, function ($query, $value) {
@@ -28,6 +30,12 @@ class ShopController extends Controller
             })
             ->when($cutType, function ($query, $value) {
                 $query->where('cut_type', $value);
+            })
+            ->when(is_numeric($minPrice), function ($query, $value) {
+                $query->where('price', '>=', $value);
+            })
+            ->when(is_numeric($maxPrice), function ($query, $value) {
+                $query->where('price', '<=', $value);
             })
             ->where('is_active', true)
             ->orderByDesc('created_at')
@@ -48,21 +56,7 @@ class ShopController extends Controller
             ->orderBy('cut_type')
             ->pluck('cut_type');
 
-        $cart = $request->session()->get('cart', []);
-        $cartIds = array_keys($cart);
-
-        $cartItems = collect();
-        if (! empty($cartIds)) {
-            $cartItems = Product::whereIn('id', $cartIds)
-                ->get()
-                ->map(function (Product $product) use ($cart) {
-                    return [
-                        'product' => $product,
-                        'quantity' => $cart[$product->id] ?? 0,
-                    ];
-                });
-        }
-
+        $cartItems = $this->loadCartItems($request);
         $cartQuantity = $cartItems->sum('quantity');
         $cartTotal = $cartItems->reduce(function ($carry, $item) {
             return $carry + ($item['product']->price * $item['quantity']);
@@ -77,7 +71,9 @@ class ShopController extends Controller
             'cartTotal',
             'search',
             'category',
-            'cutType'
+            'cutType',
+            'minPrice',
+            'maxPrice'
         ));
     }
 
@@ -105,5 +101,55 @@ class ShopController extends Controller
         }
 
         return back()->with('success', __('Removed from cart.'));
+    }
+
+    public function updateCart(Request $request, Product $product): RedirectResponse
+    {
+        $data = $request->validate([
+            'quantity' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $cart = $request->session()->get('cart', []);
+
+        if ($data['quantity'] <= 0) {
+            unset($cart[$product->id]);
+        } else {
+            $cart[$product->id] = $data['quantity'];
+        }
+
+        $request->session()->put('cart', $cart);
+
+        return back()->with('success', __('Updated cart quantities.'));
+    }
+
+    public function showCart(Request $request): View
+    {
+        $cartItems = $this->loadCartItems($request);
+
+        $cartQuantity = $cartItems->sum('quantity');
+        $cartTotal = $cartItems->reduce(function ($carry, $item) {
+            return $carry + ($item['product']->price * $item['quantity']);
+        }, 0);
+
+        return view('shop.cart', compact('cartItems', 'cartQuantity', 'cartTotal'));
+    }
+
+    private function loadCartItems(Request $request)
+    {
+        $cart = $request->session()->get('cart', []);
+        $cartIds = array_keys($cart);
+
+        if (empty($cartIds)) {
+            return collect();
+        }
+
+        return Product::whereIn('id', $cartIds)
+            ->get()
+            ->map(function (Product $product) use ($cart) {
+                return [
+                    'product' => $product,
+                    'quantity' => $cart[$product->id] ?? 0,
+                ];
+            });
     }
 }
