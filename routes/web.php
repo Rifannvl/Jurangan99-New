@@ -10,7 +10,9 @@ use Livewire\Volt\Volt;
 Route::aliasMiddleware('role', \App\Http\Middleware\EnsureUserHasRole::class);
 
 Route::get('/', [ShopController::class, 'index'])->name('home');
+Route::get('/cart', [ShopController::class, 'showCart'])->name('shop.cart.index');
 Route::post('/cart/add', [ShopController::class, 'addToCart'])->name('shop.cart.add');
+Route::patch('/cart/{product}', [ShopController::class, 'updateCart'])->name('shop.cart.update');
 Route::delete('/cart/{product}', [ShopController::class, 'removeFromCart'])->name('shop.cart.remove');
 
 Route::view('dashboard', 'dashboard')
