@@ -305,6 +305,7 @@
                                             @if(in_array($product->id, $wishlistIds ?? []))
                                                 @method('DELETE')
                                             @endif
+                                            <input type="hidden" name="product_id" value="{{ $product->id }}">
                                             <button type="submit" class="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/70 bg-white/70 text-zinc-500 transition hover:border-emerald-300 hover:text-rose-500">
                                                 @if(in_array($product->id, $wishlistIds ?? []))
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-heart-fill text-rose-500" viewBox="0 0 16 16">
@@ -329,8 +330,10 @@
                                             <span class="text-2xl font-bold text-emerald-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                             <span class="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-400">{{ __('Stok') }} {{ number_format($product->stock) }}</span>
                                         </div>
+                                        
                                     </div>
                                     <form action="{{ route('shop.cart.add') }}" method="POST" class="mt-6 flex">
+
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
