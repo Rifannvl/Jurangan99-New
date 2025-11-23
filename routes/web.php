@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -11,6 +13,8 @@ Route::aliasMiddleware('role', \App\Http\Middleware\EnsureUserHasRole::class);
 
 Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/product', [ShopController::class, 'showProducts'])->name('shop.products.index');
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('shop.checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'store'])->name('shop.checkout.store');
 Route::get('/cart', [ShopController::class, 'showCart'])->name('shop.cart.index');
 Route::post('/cart/add', [ShopController::class, 'addToCart'])->name('shop.cart.add');
 Route::patch('/cart/{product}', [ShopController::class, 'updateCart'])->name('shop.cart.update');
@@ -48,5 +52,8 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('products', AdminProductController::class)
         ->except(['show'])
         ->names('admin.products');
+    Route::resource('orders', AdminOrderController::class)
+        ->only(['index', 'show', 'update'])
+        ->names('admin.orders');
 });
 
