@@ -57,6 +57,10 @@
                 @endif
             </a>
             
+            @auth
+                <a href="{{ route('shop.orders.index') }}" class="text-sm font-semibold text-zinc-600 transition hover:text-emerald-600">{{ __('Pesanan saya') }}</a>
+            @endauth
+
             {{-- Tambahkan pemisah visual kecil --}}
             <span class="h-6 w-px bg-gray-200 hidden sm:block"></span>
 
