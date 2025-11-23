@@ -3,8 +3,11 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AdminRecipeController;
 use App\Http\Controllers\CheckoutController;
+
 use App\Http\Controllers\CustomerOrderController;
+use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -24,6 +27,7 @@ Route::delete('/cart/{product}', [ShopController::class, 'removeFromCart'])->nam
 Route::post('/wishlist/add', [ShopController::class, 'addToWishlist'])->name('shop.wishlist.add');
 Route::delete('/wishlist/{product}', [ShopController::class, 'removeFromWishlist'])->name('shop.wishlist.remove');
 Route::get('/wishlist', [ShopController::class, 'showWishlist'])->name('shop.wishlist.index');
+Route::get('/recipes', [RecipeController::class, 'index'])->name('recipes.index');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
@@ -57,6 +61,9 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('products', AdminProductController::class)
         ->except(['show'])
         ->names('admin.products');
+    Route::resource('recipes', AdminRecipeController::class)
+        ->except(['show'])
+        ->names('admin.recipes');
     Route::resource('orders', AdminOrderController::class)
         ->only(['index', 'show', 'update'])
         ->names('admin.orders');
