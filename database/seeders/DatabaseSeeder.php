@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
         );
 
         $this->call(CutSeeder::class);
+        $this->call(RecipeSeeder::class);
     }
 }
