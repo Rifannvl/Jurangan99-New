@@ -12,7 +12,7 @@ class CheckoutController extends Controller
 {
     use InteractsWithCart;
 
-    public function index(Request $request): View
+    public function index(Request $request): View|RedirectResponse
     {
         $cartItems = $this->loadCartItems($request);
 
