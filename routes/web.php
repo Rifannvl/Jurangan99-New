@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('reports/sales', [AdminOrderController::class, 'salesReport'])->name('admin.reports.sales');
     Route::resource('products', AdminProductController::class)
         ->except(['show'])
         ->names('admin.products');
