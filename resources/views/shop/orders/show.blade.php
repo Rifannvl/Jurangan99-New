@@ -1,4 +1,5 @@
 @php
+    use App\Models\Order;
     use Illuminate\Support\Str;
 
     // Helper warna status (Konsisten dengan halaman index)
@@ -188,6 +189,72 @@
                             </div>
                         </div>
                     </section>
+
+                    @if($order->status === Order::STATUS_COMPLETED)
+                        <section class="rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm">
+                            <h2 class="mb-4 text-sm font-bold uppercase tracking-wider text-zinc-400">{{ __('Ulasan & Rating Produk') }}</h2>
+
+                            @if($order->review)
+                                <div class="space-y-3 rounded-2xl border border-emerald-100 bg-emerald-50/50 p-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-semibold text-zinc-900">{{ __('Rating') }}: {{ $order->review->rating }}/5</p>
+                                            <p class="text-xs text-zinc-500">{{ $order->review->created_at->format('d F Y') }}</p>
+                                        </div>
+                                        <div class="flex gap-1 text-sm">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <span class="{{ $i <= $order->review->rating ? 'text-amber-500' : 'text-zinc-300' }}">★</span>
+                                            @endfor
+                                        </div>
+                                    </div>
+                                    <p class="text-sm text-zinc-600">{{ $order->review->comment }}</p>
+                                </div>
+                            @else
+                                <form method="POST" action="{{ route('shop.orders.reviews.store', $order) }}" class="space-y-4">
+                                    @csrf
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-zinc-700">{{ __('Rating kualitas (1-5)') }}</label>
+                                        <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <label class="flex items-center gap-1 text-zinc-500">
+                                                    <input
+                                                        type="radio"
+                                                        name="rating"
+                                                        value="{{ $i }}"
+                                                        @checked(old('rating') == $i)
+                                                        class="h-4 w-4 rounded border border-zinc-300 text-emerald-600 focus:ring-emerald-500"
+                                                    />
+                                                    {{ $i }}
+                                                </label>
+                                            @endfor
+                                        </div>
+                                        @error('rating')
+                                            <p class="text-xs text-rose-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <div class="space-y-2">
+                                        <label class="text-sm font-semibold text-zinc-700">{{ __('Ulasan Anda') }}</label>
+                                        <textarea
+                                            name="comment"
+                                            rows="4"
+                                            class="w-full rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 shadow-sm focus:border-emerald-500 focus:outline-none"
+                                        >{{ old('comment') }}</textarea>
+                                        @error('comment')
+                                            <p class="text-xs text-rose-600">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        class="w-full rounded-2xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-emerald-600/30 transition hover:bg-emerald-700"
+                                    >
+                                        {{ __('Kirim Ulasan') }}
+                                    </button>
+                                </form>
+                            @endif
+                        </section>
+                    @endif
 
                 </div>
 
