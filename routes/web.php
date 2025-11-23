@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
@@ -30,6 +31,8 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
+    Route::get('/orders', [CustomerOrderController::class, 'index'])->name('shop.orders.index');
+    Route::get('/orders/{order}', [CustomerOrderController::class, 'show'])->name('shop.orders.show');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
     Volt::route('settings/password', 'settings.password')->name('user-password.edit');
