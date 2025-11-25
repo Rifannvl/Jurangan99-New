@@ -1,7 +1,7 @@
 @php
     $address = 'Jalan Pahlawan No. 9 Kp. Tengah, RT.01/RW.05, Cileungsi, Kabupaten Bogor, Jawa Barat 16820';
     $phone = '0822-5776-8899';
-    $email = 'halo@jurangan99.id';
+    $email = 'ratufarelia@gmail.com';
     // Pastikan URL map valid. Ini contoh embed map Cileungsi
     $mapSrc = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3964.994553295886!2d106.96010079999999!3d-6.394702499999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6995efa2a2c841%3A0x213db704fed9f954!2sJURAGAN%20DAGING%2099!5e0!3m2!1sid!2sid!4v1764094103567!5m2!1sid!2sid';
 @endphp
@@ -181,7 +181,7 @@
 
                             <button
                                 type="submit"
-                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
+                                class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-8 py-4 text-sm font-bold text-white shadow-lg shadow-emerald-200 transition-all hover:bg-emerald-700 hover:shadow-xl hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-offset-2 focus-visible:outline-emerald-600"
                             >
                                 <span>{{ __('Kirim Pesan') }}</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/></svg>
