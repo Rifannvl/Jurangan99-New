@@ -15,6 +15,7 @@ class OrderItem extends Model
         'unit_price',
         'quantity',
         'total',
+        'payment_proof',
     ];
 
     protected $casts = [
