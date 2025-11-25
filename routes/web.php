@@ -17,6 +17,7 @@ Route::aliasMiddleware('role', \App\Http\Middleware\EnsureUserHasRole::class);
 
 Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/product', [ShopController::class, 'showProducts'])->name('shop.products.index');
+Route::get('/product/{product:slug}', [ShopController::class, 'showProduct'])->name('shop.products.show');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('shop.checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('shop.checkout.store');
 Route::get('/cart', [ShopController::class, 'showCart'])->name('shop.cart.index');
