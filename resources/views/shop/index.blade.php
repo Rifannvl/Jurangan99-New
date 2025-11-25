@@ -313,7 +313,9 @@
                             {{-- Image Section --}}
                             <div class="relative aspect-[4/3] w-full overflow-hidden bg-gray-100">
                                 @if($product->image_url)
-                                    <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+                                    <a href="{{ route('shop.products.show', $product) }}" class="absolute inset-0 block">
+                                        <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-700 group-hover:scale-110" />
+                                    </a>
                                 @else
                                     <div class="flex h-full w-full items-center justify-center bg-gray-50 text-xs font-medium uppercase tracking-widest text-gray-400">
                                         {{ __('No Image') }}
