@@ -5,6 +5,7 @@
 <x-layouts.plain :title="$product->name">
     <div class="min-h-screen bg-white text-zinc-900 font-sans">
         
+        @include('partials.navbar')
         {{-- Breadcrumbs (Opsional, untuk navigasi yang lebih baik) --}}
         <nav class="mx-auto max-w-7xl px-4 pt-6 text-sm text-zinc-500 sm:px-6 lg:px-8">
             <ol class="flex items-center space-x-2">
