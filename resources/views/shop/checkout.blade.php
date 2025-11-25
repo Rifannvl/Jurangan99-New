@@ -134,11 +134,16 @@
                                             </div>
                                             <div class="flex flex-1 flex-col justify-center">
                                                 <h4 class="line-clamp-1 text-sm font-semibold text-zinc-900">{{ $item['product']->name }}</h4>
-                                                <p class="text-xs text-zinc-500">{{ $item['quantity'] }} x Rp{{ number_format($item['product']->price, 0, ',', '.') }}</p>
+                                                <p class="text-xs text-zinc-500">
+                                                    {{ $item['quantity'] }} x Rp{{ number_format($item['unit_price'], 0, ',', '.') }}
+                                                </p>
+                                                @if(!empty($item['weight_label']))
+                                                    <p class="text-[11px] uppercase tracking-[0.3em] text-zinc-400">{{ $item['weight_label'] }}</p>
+                                                @endif
                                             </div>
                                             <div class="flex flex-col justify-center text-right">
                                                 <p class="text-sm font-semibold text-zinc-900">
-                                                    Rp{{ number_format($item['product']->price * $item['quantity'], 0, ',', '.') }}
+                                                    Rp{{ number_format($item['unit_price'] * $item['quantity'], 0, ',', '.') }}
                                                 </p>
                                             </div>
                                         </div>

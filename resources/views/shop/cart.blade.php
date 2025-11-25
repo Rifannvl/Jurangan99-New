@@ -111,9 +111,12 @@
                                             <p class="text-lg font-semibold text-zinc-900">{{ $item['product']->name }}</p>
                                             <p class="text-sm text-zinc-500">{{ Str::limit($item['product']->description ?? __('Deskripsi belum tersedia.'), 80) }}</p>
                                             <div class="flex flex-wrap items-center gap-3 text-sm text-zinc-500">
-                                                <span>{{ __('Harga') }}: Rp {{ number_format($item['product']->price, 2) }}</span>
-                                                <span>{{ __('Subtotal') }}: Rp {{ number_format($item['product']->price * $item['quantity'], 2) }}</span>
+                                                <span>{{ __('Harga satuan') }}: Rp {{ number_format($item['unit_price'], 2) }}</span>
+                                                <span>{{ __('Subtotal') }}: Rp {{ number_format($item['unit_price'] * $item['quantity'], 2) }}</span>
                                             </div>
+                                            @if(!empty($item['weight_label']))
+                                                <p class="text-[11px] uppercase tracking-[0.4em] text-zinc-400">{{ $item['weight_label'] }}</p>
+                                            @endif
                                         </div>
                                     </div>
                                     <div class="flex flex-none flex-col gap-3 text-sm text-zinc-500">

@@ -291,7 +291,20 @@
                         {{-- Daftar Produk (Sama seperti sebelumnya) --}}
                         <div class="mt-8 grid gap-6 md:grid-cols-2">
                             @foreach($products as $product)
-                                <article class="group flex flex-col rounded-[1.5rem] border border-zinc-200 bg-white p-6 shadow-lg transition hover:border-emerald-300 hover:shadow-emerald-100">
+                                @php
+                                    $baseWeightValue = $product->weight > 0 ? $product->weight : 1;
+
+                                    if ($product->weight > 0) {
+                                        $formattedWeight = number_format($product->weight, 2, ',', '.');
+                                        $formattedWeight = rtrim(rtrim($formattedWeight, '0'), ',');
+                                        $weightLabel = "{$formattedWeight} kg";
+                                    } else {
+                                        $weightLabel = __('Standar');
+                                    }
+
+                                    $variantOptions = $product->weight_variant_options ?? [];
+                                @endphp
+                                <article class="group flex flex-col rounded-[1.5rem] border border-zinc-200 bg-white p-6 shadow-lg transition hover:border-emerald-300 hover:shadow-emerald-100" data-product-card>
                                     <div class="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-zinc-100">
                                         @if($product->image_url)
                                             <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
@@ -327,16 +340,68 @@
                                         <h3 class="text-xl font-semibold text-zinc-900">{{ $product->name }}</h3>
                                         <p class="text-sm text-zinc-500">{{ Str::limit($product->description ?? __('Deskripsi belum tersedia.'), 100) }}</p>
                                         <div class="flex items-center justify-between">
-                                            <span class="text-2xl font-bold text-emerald-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
+                                            <span data-price-display class="text-2xl font-bold text-emerald-600">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                             <span class="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-400">{{ __('Stok') }} {{ number_format($product->stock) }}</span>
                                         </div>
+                                        <p class="text-xs font-semibold uppercase tracking-[0.4em] text-zinc-500">
+                                            <span data-selected-weight-label>{{ $weightLabel }}</span>
+                                        </p>
                                         
                                     </div>
-                                    <form action="{{ route('shop.cart.add') }}" method="POST" class="mt-6 flex">
-
+                                    <form
+                                        action="{{ route('shop.cart.add') }}"
+                                        method="POST"
+                                        class="mt-6 flex flex-col gap-3"
+                                        data-product-variant-form
+                                        data-base-price="{{ $product->price }}"
+                                        data-base-weight="{{ $baseWeightValue }}"
+                                        data-default-weight-label="{{ $weightLabel }}"
+                                    >
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <input type="hidden" name="quantity" value="1">
+                                        <input type="hidden" name="unit_price" value="{{ number_format($product->price, 2, '.', '') }}">
+                                        <input type="hidden" name="selected_weight" value="{{ $baseWeightValue }}">
+                                        <input type="hidden" name="selected_weight_label" value="{{ $weightLabel }}">
+
+                                        <div class="space-y-3">
+                                            <label class="block text-xs font-semibold text-zinc-500">
+                                                {{ __('Varian berat') }}
+                                                <select
+                                                    data-variant-select
+                                                    class="mt-2 w-full rounded-2xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none"
+                                                >
+                                                    <option
+                                                        value="{{ number_format($baseWeightValue, 4, '.', '') }}"
+                                                        data-variant-weight="{{ number_format($baseWeightValue, 6, '.', '') }}"
+                                                        data-variant-label="{{ $weightLabel }}"
+                                                    >
+                                                        {{ __('Standar') }} ({{ $weightLabel }})
+                                                    </option>
+                                                    @foreach($variantOptions as $variant)
+                                                        <option
+                                                            value="{{ number_format($variant['kilograms'], 6, '.', '') }}"
+                                                            data-variant-weight="{{ number_format($variant['kilograms'], 6, '.', '') }}"
+                                                            data-variant-label="{{ $variant['label'] }}"
+                                                        >
+                                                            {{ $variant['label'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </label>
+                                            <label class="block text-xs font-semibold text-zinc-500">
+                                                {{ __('Berat khusus (kg)') }}
+                                                <input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0.01"
+                                                    placeholder="{{ number_format($baseWeightValue, 2, ',', '.') }}"
+                                                    data-custom-weight
+                                                    class="mt-2 w-full rounded-2xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-emerald-500 focus:outline-none"
+                                                >
+                                            </label>
+                                        </div>
+
                                         <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-4 py-3 text-xs font-semibold uppercase tracking-[0.4em] text-white transition hover:bg-emerald-500">
                                             {{ __('Tambah ke keranjang') }}
                                         </button>
@@ -354,4 +419,118 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currencyFormatter = new Intl.NumberFormat('id-ID', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            });
+
+            document.querySelectorAll('[data-product-variant-form]').forEach((form) => {
+                const card = form.closest('[data-product-card]');
+                const priceDisplay = card?.querySelector('[data-price-display]');
+                const weightDisplay = card?.querySelector('[data-selected-weight-label]');
+                const variantSelect = form.querySelector('[data-variant-select]');
+                const customInput = form.querySelector('[data-custom-weight]');
+                const hiddenUnitPrice = form.querySelector('input[name="unit_price"]');
+                const hiddenWeight = form.querySelector('input[name="selected_weight"]');
+                const hiddenWeightLabel = form.querySelector('input[name="selected_weight_label"]');
+                const basePrice = Number(form.dataset.basePrice) || 0;
+                const baseWeight = Number(form.dataset.baseWeight) || 1;
+                const defaultLabel = (form.dataset.defaultWeightLabel || '').trim();
+
+                const formatCurrency = (value) => `Rp ${currencyFormatter.format(value)}`;
+                const formatCustomWeightLabel = (value) => {
+                    const normalized = Number(value);
+
+                    if (!Number.isFinite(normalized) || normalized <= 0) {
+                        return defaultLabel || '';
+                    }
+
+                    const formatted = normalized.toLocaleString('id-ID', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                    });
+
+                    return `${formatted} kg`;
+                };
+
+                const refresh = () => {
+                    let weight = baseWeight;
+                    let label = defaultLabel || formatCustomWeightLabel(baseWeight);
+
+                    if (customInput && customInput.value) {
+                        const customValue = Number(customInput.value);
+
+                        if (customValue > 0) {
+                            weight = customValue;
+                            label = `${customValue.toLocaleString('id-ID', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })} kg`;
+                        }
+                    }
+
+                    if ((!customInput || !customInput.value) && variantSelect) {
+                        const selectedOption = variantSelect.selectedOptions[0];
+
+                        if (selectedOption) {
+                            const variantWeight = Number(selectedOption.dataset.variantWeight) || 0;
+
+                            if (variantWeight > 0) {
+                                weight = variantWeight;
+                                label = selectedOption.dataset.variantLabel || label;
+                            }
+                        }
+                    }
+
+                    const normalizedBaseWeight = baseWeight > 0 ? baseWeight : 1;
+                    const normalizedWeight = weight > 0 ? weight : normalizedBaseWeight;
+                    const price = normalizedBaseWeight > 0 ? (basePrice * (normalizedWeight / normalizedBaseWeight)) : basePrice;
+                    const finalPrice = Number.isFinite(price) ? price : basePrice;
+
+                    if (priceDisplay) {
+                        priceDisplay.textContent = formatCurrency(finalPrice);
+                    }
+
+                    if (weightDisplay && label) {
+                        weightDisplay.textContent = label;
+                    }
+
+                    if (hiddenUnitPrice) {
+                        hiddenUnitPrice.value = finalPrice.toFixed(2);
+                    }
+
+                    if (hiddenWeight) {
+                        hiddenWeight.value = normalizedWeight;
+                    }
+
+                    if (hiddenWeightLabel) {
+                        hiddenWeightLabel.value = label;
+                    }
+                };
+
+                const handleVariantChange = () => {
+                    if (customInput) {
+                        customInput.value = '';
+                    }
+
+                    refresh();
+                };
+
+                const handleCustomChange = () => {
+                    if (variantSelect) {
+                        variantSelect.selectedIndex = 0;
+                    }
+
+                    refresh();
+                };
+
+                variantSelect?.addEventListener('change', handleVariantChange);
+                customInput?.addEventListener('input', handleCustomChange);
+
+                refresh();
+            });
+        });
+    </script>
 </x-layouts.plain>
