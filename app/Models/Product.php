@@ -35,6 +35,45 @@ class Product extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getWeightVariantOptionsAttribute(): array
+    {
+        if (! $this->weight_variant) {
+            return [];
+        }
+
+        return collect(explode(',', $this->weight_variant))
+            ->map(fn ($variant) => trim($variant))
+            ->filter()
+            ->map(function (string $label) {
+                return [
+                    'label' => $label,
+                    'kilograms' => $this->normalizeWeightLabelToKilograms($label),
+                ];
+            })
+            ->filter(fn ($variant) => $variant['kilograms'] > 0)
+            ->values()
+            ->all();
+    }
+
+    protected function normalizeWeightLabelToKilograms(string $label): float
+    {
+        $value = trim($label);
+
+        if ($value === '') {
+            return 0.0;
+        }
+
+        if (! preg_match('/([\d.,]+)\s*(kg|g)?/i', $value, $matches)) {
+            return 0.0;
+        }
+
+        $number = str_replace(',', '.', $matches[1]);
+        $weight = (float) $number;
+        $unit = strtolower($matches[2] ?? 'kg');
+
+        return $unit === 'g' ? $weight / 1000 : $weight;
+    }
+
     public function getImageUrlAttribute(): ?string
     {
         if (! $this->image_path) {
