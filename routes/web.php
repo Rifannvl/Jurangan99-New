@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AdminRecipeController;
 use App\Http\Controllers\CheckoutController;
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CustomerOrderController;
 use App\Http\Controllers\RecipeController;
 use App\Http\Controllers\ShopController;
@@ -18,6 +19,8 @@ Route::aliasMiddleware('role', \App\Http\Middleware\EnsureUserHasRole::class);
 Route::get('/', [ShopController::class, 'index'])->name('home');
 Route::get('/product', [ShopController::class, 'showProducts'])->name('shop.products.index');
 Route::get('/product/{product:slug}', [ShopController::class, 'showProduct'])->name('shop.products.show');
+Route::get('/contact', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contact', [ContactController::class, 'send'])->name('contact.send');
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('shop.checkout.index');
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('shop.checkout.store');
 Route::get('/cart', [ShopController::class, 'showCart'])->name('shop.cart.index');
