@@ -88,9 +88,15 @@
                 <a href="{{ route('recipes.index') }}" class="text-sm font-semibold text-zinc-600 transition hover:text-emerald-600">{{ __('Resep') }}</a>
             </div>
 
+            {{-- 4. Tautan Kontak --}}
+            @auth
+                <a href="{{ route('contact.index') }}" class="text-sm font-semibold text-zinc-600 transition hover:text-emerald-600">{{ __('Kontak Kami') }}</a>
+                
+            @endauth
+
             <span class="h-6 w-px bg-gray-200 hidden sm:block"></span>
 
-            {{-- 4. Tombol Aksi Login/Logout --}}
+            {{-- 5. Tombol Aksi Login/Logout --}}
             @guest
                 <a href="{{ route('login') }}" class="rounded-lg bg-emerald-600 px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-emerald-500/30 transition hover:bg-emerald-700 inline-flex items-center justify-center gap-2">
                     <i class="fas fa-right-to-bracket"></i> {{ __('Login') }}
