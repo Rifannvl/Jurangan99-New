@@ -27,6 +27,15 @@ class CustomerOrderController extends Controller
         return view('shop.orders.show', compact('order'));
     }
 
+    public function invoice(Request $request, Order $order): View
+    {
+        $this->authorizeOrder($order, $request);
+
+        $order->load('items');
+
+        return view('shop.orders.invoice', compact('order'));
+    }
+
     public function storeReview(Request $request, Order $order): RedirectResponse
     {
         $this->authorizeOrder($order, $request);
