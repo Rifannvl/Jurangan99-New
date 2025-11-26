@@ -52,13 +52,18 @@
                     <span class="rounded-full border px-4 py-1.5 text-xs font-bold uppercase tracking-wider {{ $getStatusClasses($order->status) }}">
                         {{ $order->status }}
                     </span>
-                    {{-- Optional Print/Help Button --}}
-                    <button class="hidden items-center justify-center rounded-xl border border-zinc-200 bg-white p-2 text-zinc-500 shadow-sm hover:bg-zinc-50 hover:text-zinc-900 sm:flex">
+                    <a
+                        href="{{ route('shop.orders.invoice', $order) }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white p-2 text-zinc-500 shadow-sm hover:bg-zinc-50 hover:text-zinc-900"
+                    >
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
-                            <path fill-rule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.552c.377.046.752.097 1.126.153A2.212 2.212 0 0118 8.653v4.097A2.25 2.25 0 0115.75 15h-.241l.305 1.984A1.75 1.75 0 0114.084 19H5.915a1.75 1.75 0 01-1.73-2.016L4.492 15H4.25A2.25 2.25 0 012 12.75V8.653c0-1.082.775-2.034 1.874-2.198.374-.056.75-.107 1.127-.153V2.75zM6.5 2.75v3.5c1.264.12 2.61.16 4 .12 1.127.032 2.26.002 3.5-.12V2.75a.25.25 0 00-.25-.25h-6.5a.25.25 0 00-.25.25zm.59 13.298a.25.25 0 00.247.288h5.326a.25.25 0 00.248-.288L12.6 14H7.4l-.31 2.048z" clip-rule="evenodd" />
-                        </svg>
-                    </button>
+                            <path fill-rule="evenodd" d="M5 2.75C5 1.784 5.784 1 6.75 1h6.5c.966 0 1.75.784 1.75 1.75v3.552c.377.046.752.097 1.126.153A2.212 2.212 0 0118 8.653v4.097A2.25 2.25 0 0115.75 15h-.241l.305 1.984A1.75 1.75 0 0114.084 19H5.915a1.75 1.75 0 01-1.73-2.016L4.492 15H4.25A2.25 2.25 0 012 12.75V8.653c0-1.082.775-2.034 1.874-2.198.374-.056.75-.107 1.127-.153V2.75zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3z" clip-rule="evenodd" />
+                        <span class="text-xs font-semibold uppercase tracking-[0.3em]">{{ __('Cetak Invoice') }}</span>
+                    </a>
                 </div>
+
             </div>
 
             <div class="grid gap-8 lg:grid-cols-3">
