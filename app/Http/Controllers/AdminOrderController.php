@@ -42,6 +42,13 @@ class AdminOrderController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
+    public function invoice(Order $order): View
+    {
+        $order->load('items');
+
+        return view('admin.orders.invoice', compact('order'));
+    }
+
     public function update(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
