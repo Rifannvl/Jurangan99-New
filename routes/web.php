@@ -71,5 +71,7 @@ Route::prefix('admin')->middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('orders', AdminOrderController::class)
         ->only(['index', 'show', 'update'])
         ->names('admin.orders');
+    Route::get('orders/{order}/invoice', [AdminOrderController::class, 'invoice'])
+        ->name('admin.orders.invoice');
 });
 
